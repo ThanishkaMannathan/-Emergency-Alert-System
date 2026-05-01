@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alert History – Emergency Alert System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/style.css" />
+  <link rel="stylesheet" href="/static/css/history.css" />
+</head>
+<body class="history-page">
+
+  <canvas id="grain"></canvas>
+
+  <nav class="nav">
+    <div class="nav-logo">🛡️ SAFE<span>GUARD</span></div>
+    <a href="/" class="nav-link">⚡ Panic Button</a>
+  </nav>
+
+  <div class="hist-container">
+
+    <div class="hist-header">
+      <div>
+        <h1 class="hist-title">ALERT <span class="title-accent">HISTORY</span></h1>
+        <p class="hist-sub">All recorded emergency alerts from this device</p>
+      </div>
+      <div class="hist-stats">
+        <div class="stat-box">
+          <span class="stat-num" id="totalCount">–</span>
+          <span class="stat-label">Total Alerts</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num" id="todayCount">–</span>
+          <span class="stat-label">Today</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hist-toolbar">
+      <input type="text" class="search-input" id="searchInput" placeholder="🔍  Search by date, address…" />
+      <button class="clear-btn" id="clearAllBtn" onclick="confirmClearAll()">🗑️ Clear All</button>
+    </div>
+
+    <div id="alertList" class="alert-list">
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading alerts…</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="/static/js/history.js"></script>
+  <script src="/static/js/grain.js"></script>
+</body>
+</html>
