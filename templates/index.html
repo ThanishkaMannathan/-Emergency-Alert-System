@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Emergency Alert System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+
+  <!-- Background noise grain -->
+  <canvas id="grain"></canvas>
+
+  <!-- Pulse rings behind button -->
+  <div class="pulse-bg" id="pulseBg">
+    <div class="ring r1"></div>
+    <div class="ring r2"></div>
+    <div class="ring r3"></div>
+  </div>
+
+  <nav class="nav">
+    <div class="nav-logo">🛡️ SAFE<span>GUARD</span></div>
+    <a href="/history" class="nav-link">📋 History</a>
+  </nav>
+
+  <main class="main">
+
+    <div class="hero-text">
+      <div class="status-badge" id="statusBadge">
+        <span class="dot"></span> SYSTEM READY
+      </div>
+      <h1 class="title">EMERGENCY<br><span class="title-accent">ALERT</span></h1>
+      <p class="subtitle">Press and hold the button to trigger an emergency alert.<br>Your GPS location will be sent instantly.</p>
+    </div>
+
+    <!-- The panic button -->
+    <div class="btn-wrap">
+      <button class="panic-btn" id="panicBtn" title="Hold to trigger emergency alert">
+        <div class="btn-inner">
+          <span class="btn-icon">⚡</span>
+          <span class="btn-label">SOS</span>
+          <span class="btn-sub">HOLD TO ALERT</span>
+        </div>
+        <svg class="progress-ring" viewBox="0 0 200 200">
+          <circle class="ring-bg"  cx="100" cy="100" r="88" />
+          <circle class="ring-fill" id="ringFill" cx="100" cy="100" r="88" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Info cards -->
+    <div class="info-cards">
+      <div class="card">
+        <div class="card-icon">📡</div>
+        <div class="card-text">
+          <strong>Live GPS</strong>
+          <span id="gpsStatus">Awaiting trigger...</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-icon">✉️</div>
+        <div class="card-text">
+          <strong>Email Alert</strong>
+          <span id="emailStatus">Standby</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🗄️</div>
+        <div class="card-text">
+          <strong>Database</strong>
+          <span id="dbStatus">Standby</span>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Toast notification -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Alert result modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-icon" id="modalIcon">🚨</div>
+      <h2 class="modal-title" id="modalTitle">Alert Sent!</h2>
+      <p class="modal-msg" id="modalMsg"></p>
+      <div class="modal-meta" id="modalMeta"></div>
+      <div class="modal-btns">
+        <a id="mapsLink" href="#" target="_blank" class="modal-btn primary">📌 Open Maps</a>
+        <button onclick="closeModal()" class="modal-btn secondary">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/main.js"></script>
+  <script src="/static/js/grain.js"></script>
+</body>
+</html>
