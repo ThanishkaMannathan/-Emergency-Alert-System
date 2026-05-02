@@ -95,7 +95,9 @@ body{{font-family:Arial,sans-serif;background:#0a0a0a;color:#f0f0f0;margin:0;pad
 """
     msg.attach(MIMEText(plain, "plain"))
     msg.attach(MIMEText(html,  "html"))
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as s:
+   with smtplib.SMTP("smtp.gmail.com", 587) as s:
+        s.ehlo()
+        s.starttls()
         s.login(SENDER_EMAIL, SENDER_PASSWORD)
         s.sendmail(SENDER_EMAIL, RECEIVER_EMAIL, msg.as_string())
 
