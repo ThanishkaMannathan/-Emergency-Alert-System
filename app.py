@@ -16,9 +16,9 @@ app = Flask(__name__)
 CORS(app)
 
 # ─── CONFIG ───────────────────────────────────────────────────────────────────
-SENDER_EMAIL    = os.environ.get("SENDER_EMAIL",    "thanishkamannathan25099@gmail.com")
+SENDER_EMAIL    = os.environ.get("SENDER_EMAIL",    "mannathanthanishka07@gmail.com")
 SENDER_PASSWORD = os.environ.get("SENDER_PASSWORD", "mail password")
-RECEIVER_EMAIL  = os.environ.get("RECEIVER_EMAIL",  "thanishkamannathan25099@gmail.com")
+RECEIVER_EMAIL  = os.environ.get("RECEIVER_EMAIL",  "mannathanthanishka07@gmail.com")
 
 # On Render, use /tmp for writable storage (SQLite)
 if os.environ.get("RENDER"):
