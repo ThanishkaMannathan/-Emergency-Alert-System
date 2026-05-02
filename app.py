@@ -10,26 +10,28 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-SENDER_EMAIL    = os.environ.get("SENDER_EMAIL",    "mannathanthanishka07@gmail.com")
+SENDER_EMAIL = os.environ.get("SENDER_EMAIL", "mannathanthanishka07@gmail.com")
 SENDER_PASSWORD = os.environ.get("SENDER_PASSWORD", "paxn gnke ssem kghx")
-RECEIVER_EMAIL  = os.environ.get("RECEIVER_EMAIL",  "mannathanthanishka07@gmail.com")
-DB_PATH         = "/tmp/alerts.db"
+RECEIVER_EMAIL = os.environ.get("RECEIVER_EMAIL", "mannathanthanishka07@gmail.com")
+DB_PATH = "/tmp/alerts.db"
+
 
 def init_db():
     conn = sqlite3.connect(DB_PATH)
     conn.execute("""
         CREATE TABLE IF NOT EXISTS alerts (
-            id        INTEGER PRIMARY KEY AUTOINCREMENT,
-            latitude  REAL,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            latitude REAL,
             longitude REAL,
             maps_link TEXT,
-            address   TEXT,
+            address TEXT,
             timestamp TEXT,
-            status    TEXT DEFAULT 'sent'
+            status TEXT DEFAULT 'sent'
         )
     """)
     conn.commit()
     conn.close()
+
 
 def save_alert(lat, lng, maps_link, address, timestamp):
     conn = sqlite3.connect(DB_PATH)
@@ -43,6 +45,7 @@ def save_alert(lat, lng, maps_link, address, timestamp):
     conn.close()
     return aid
 
+
 def fetch_all_alerts():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
@@ -50,63 +53,78 @@ def fetch_all_alerts():
     conn.close()
     return [dict(r) for r in rows]
 
+
 def send_email_alert(lat, lng, maps_link, address, timestamp):
     msg = MIMEMultipart("alternative")
     msg["Subject"] = "EMERGENCY ALERT - Panic Button Triggered"
     msg["From"] = SENDER_EMAIL
     msg["To"] = RECEIVER_EMAIL
-    plain = (
-        "EMERGENCY ALERT\n"
-        "===============\n"
-        "Time      : " + timestamp + "\n"
-        "Latitude  : " + str(lat) + "\n"
-        "Longitude : " + str(lng) + "\n"
-        "Location  : " + (address or "Unknown") + "\n"
-        "Maps Link : " + maps_link + "\n\n"
+
+    plain_body = "\n".join([
+        "EMERGENCY ALERT",
+        "===============",
+        "Time      : " + timestamp,
+        "Latitude  : " + str(lat),
+        "Longitude : " + str(lng),
+        "Location  : " + (address or "Unknown"),
+        "Maps Link : " + maps_link,
+        "",
         "This is an automated alert. Please respond immediately."
-    )
-    html = (
-        "<!DOCTYPE html><html><head><meta charset='UTF-8'>"
-        "<style>"
-        "body{font-family:Arial,sans-serif;background:#0a0a0a;color:#f0f0f0;margin:0;padding:0}"
-        ".wrap{max-width:600px;margin:40px auto;background:#111;border-radius:16px;border:1px solid #333}"
-        ".hdr{background:linear-gradient(135deg,#c0392b,#e74c3c);padding:32px;text-align:center;border-radius:16px 16px 0 0}"
-        ".hdr h1{margin:0;font-size:28px;color:#fff}"
-        ".bdy{padding:32px}"
-        ".row{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #222}"
-        ".lbl{color:#888;font-size:13px}"
-        ".val{color:#f0f0f0;font-size:14px;font-weight:600}"
-        ".btn{display:block;margin:28px auto 0;padding:16px 36px;background:#e74c3c;color:#fff;font-size:16px;font-weight:700;text-decoration:none;border-radius:50px;text-align:center}"
-        ".ftr{padding:16px;text-align:center;color:#555;font-size:12px}"
-        "</style></head><body>"
-        "<div class='wrap'>"
-        "<div class='hdr'><h1>EMERGENCY ALERT</h1>"
-        "<p style='color:#ffcccc;margin:8px 0 0'>Panic Button Triggered</p></div>"
-        "<div class='bdy'>"
-        "<div class='row'><span class='lbl'>Time</span><span class='val'>" + timestamp + "</span></div>"
-        "<div class='row'><span class='lbl'>Latitude</span><span class='val'>" + str(lat) + "</span></div>"
-        "<div class='row'><span class='lbl'>Longitude</span><span class='val'>" + str(lng) + "</span></div>"
-        "<div class='row'><span class='lbl'>Address</span><span class='val'>" + (address or "Unknown") + "</span></div>"
-        "<a href='" + maps_link + "' class='btn'>Open in Google Maps</a>"
-        "</div>"
-        "<div class='ftr'>Smart Emergency Alert System</div>"
-        "</div></body></html>"
-    )
-    msg.attach(MIMEText(plain, "plain"))
-    msg.attach(MIMEText(html, "html"))
-    with smtplib.SMTP("smtp.gmail.com", 587) as s:
-        s.ehlo()
-        s.starttls()
-        s.login(SENDER_EMAIL, SENDER_PASSWORD)
-        s.sendmail(SENDER_EMAIL, RECEIVER_EMAIL, msg.as_string())
+    ])
+
+    html_body = """<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8">
+<style>
+body { font-family: Arial, sans-serif; background: #111; color: #f0f0f0; margin: 0; padding: 20px; }
+.card { max-width: 500px; margin: auto; background: #1a1a1a; border-radius: 12px; overflow: hidden; border: 1px solid #333; }
+.top { background: #c0392b; padding: 24px; text-align: center; }
+.top h1 { margin: 0; color: white; font-size: 24px; }
+.top p { margin: 6px 0 0; color: #ffcccc; font-size: 14px; }
+.body { padding: 24px; }
+.row { padding: 10px 0; border-bottom: 1px solid #333; display: flex; justify-content: space-between; }
+.label { color: #888; font-size: 13px; }
+.value { color: #fff; font-size: 13px; font-weight: bold; text-align: right; max-width: 65%; }
+.mapbtn { display: block; margin: 20px auto 0; padding: 14px 32px; background: #c0392b; color: white; text-decoration: none; border-radius: 40px; text-align: center; font-weight: bold; }
+.foot { padding: 14px; text-align: center; color: #555; font-size: 11px; }
+</style>
+</head>
+<body>
+<div class="card">
+<div class="top"><h1>EMERGENCY ALERT</h1><p>Panic Button Triggered</p></div>
+<div class="body">
+<div class="row"><span class="label">Time</span><span class="value">TIME_VAL</span></div>
+<div class="row"><span class="label">Latitude</span><span class="value">LAT_VAL</span></div>
+<div class="row"><span class="label">Longitude</span><span class="value">LNG_VAL</span></div>
+<div class="row"><span class="label">Address</span><span class="value">ADDR_VAL</span></div>
+<a href="MAP_URL" class="mapbtn">Open in Google Maps</a>
+</div>
+<div class="foot">Smart Emergency Alert System</div>
+</div>
+</body>
+</html>""".replace("TIME_VAL", timestamp).replace("LAT_VAL", str(lat)).replace("LNG_VAL", str(lng)).replace("ADDR_VAL", address or "Unknown").replace("MAP_URL", maps_link)
+
+    msg.attach(MIMEText(plain_body, "plain"))
+    msg.attach(MIMEText(html_body, "html"))
+
+    server = smtplib.SMTP("smtp.gmail.com", 587)
+    server.ehlo()
+    server.starttls()
+    server.ehlo()
+    server.login(SENDER_EMAIL, SENDER_PASSWORD)
+    server.sendmail(SENDER_EMAIL, RECEIVER_EMAIL, msg.as_string())
+    server.quit()
+
 
 @app.route("/")
 def index():
     return render_template("index.html")
 
+
 @app.route("/history")
 def history():
     return render_template("history.html")
+
 
 @app.route("/api/alert", methods=["POST"])
 def trigger_alert():
@@ -117,12 +135,15 @@ def trigger_alert():
         addr = data.get("address", "")
         timestamp = datetime.now().strftime("%d %B %Y, %I:%M:%S %p")
         maps_link = "https://www.google.com/maps?q=" + str(lat) + "," + str(lng)
+
         try:
             send_email_alert(lat, lng, maps_link, addr, timestamp)
             email_status = "sent"
-        except Exception as e:
-            email_status = "failed: " + str(e)
+        except Exception as email_err:
+            email_status = "failed: " + str(email_err)
+
         alert_id = save_alert(lat, lng, maps_link, addr, timestamp)
+
         return jsonify({
             "success": True,
             "alert_id": alert_id,
@@ -134,6 +155,7 @@ def trigger_alert():
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 500
 
+
 @app.route("/api/alerts", methods=["GET"])
 def get_alerts():
     try:
@@ -141,6 +163,7 @@ def get_alerts():
         return jsonify({"success": True, "alerts": alerts, "count": len(alerts)})
     except Exception as e:
         return jsonify({"success": False, "alerts": [], "message": str(e)})
+
 
 @app.route("/api/alerts/<int:alert_id>", methods=["DELETE"])
 def delete_alert(alert_id):
@@ -152,6 +175,7 @@ def delete_alert(alert_id):
         return jsonify({"success": True})
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 500
+
 
 init_db()
 
