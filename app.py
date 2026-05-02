@@ -17,7 +17,7 @@ CORS(app)
 
 # ─── CONFIG ───────────────────────────────────────────────────────────────────
 SENDER_EMAIL    = os.environ.get("SENDER_EMAIL",    "thanishkamannathan25099@gmail.com")
-SENDER_PASSWORD = os.environ.get("SENDER_PASSWORD", "wzpamtuoeisdjiyp")
+SENDER_PASSWORD = os.environ.get("SENDER_PASSWORD", "mail password")
 RECEIVER_EMAIL  = os.environ.get("RECEIVER_EMAIL",  "thanishkamannathan25099@gmail.com")
 
 # On Render, use /tmp for writable storage (SQLite)
